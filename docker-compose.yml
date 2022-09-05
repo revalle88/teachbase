@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: teachbase_db
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+
+  app:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    environment:
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - BD_NAME=${DB_NAME}
+    container_name: teachbase_django_container
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
